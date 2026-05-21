@@ -1,0 +1,14 @@
+[project]
+name = "land-changes"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "geopandas",
+    "matplotlib",
+    "seaborn",
+    "pandas",
+    "numpy",
+    "pyogrio",
+    "requests",
+    "contextily",
+]
