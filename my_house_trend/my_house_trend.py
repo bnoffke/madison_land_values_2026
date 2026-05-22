@@ -1,10 +1,15 @@
 import json
+import os
 import re
 import subprocess
 
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import pandas as pd
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CHARTS_DIR = os.path.join(SCRIPT_DIR, "charts")
+os.makedirs(CHARTS_DIR, exist_ok=True)
 
 PARCEL_ID = "070929101015"
 
@@ -25,7 +30,7 @@ hist.columns = ["year", "land", "improvement", "total"]
 # ---------------------------------------------------------------------------
 # Load 2026 from GeoJSON
 # ---------------------------------------------------------------------------
-gdf = gpd.read_file("Tax_Parcels.geojson", engine="pyogrio")
+gdf = gpd.read_file(os.path.join(SCRIPT_DIR, "..", "Tax_Parcels.geojson"), engine="pyogrio")
 row = gdf[gdf["Parcel"] == PARCEL_ID].iloc[0]
 df_2026 = pd.DataFrame([{
     "year": 2026,
@@ -66,5 +71,5 @@ ax.set_axisbelow(True)
 ax.legend(loc="upper left", fontsize=10)
 
 fig.tight_layout()
-fig.savefig("my_house_trend.png", dpi=150, bbox_inches="tight")
+fig.savefig(os.path.join(CHARTS_DIR, "my_house_trend.png"), dpi=150, bbox_inches="tight")
 print("Saved my_house_trend.png")

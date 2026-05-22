@@ -1,10 +1,16 @@
+import os
+
 import geopandas as gpd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CHARTS_DIR = os.path.join(SCRIPT_DIR, "charts")
+os.makedirs(CHARTS_DIR, exist_ok=True)
+
 print("Loading GeoJSON...")
-gdf = gpd.read_file("Tax_Parcels.geojson", engine="pyogrio")
+gdf = gpd.read_file(os.path.join(SCRIPT_DIR, "..", "Tax_Parcels.geojson"), engine="pyogrio")
 
 cols = [
     "PropertyClass", "PropertyUse",
@@ -74,7 +80,7 @@ ax1.annotate(
     xy=(0.5, -0.12), xycoords="axes fraction", ha="center", fontsize=9, color="#777777",
 )
 fig1.tight_layout()
-fig1.savefig("parking_mean_changes.png", dpi=150, bbox_inches="tight")
+fig1.savefig(os.path.join(CHARTS_DIR, "parking_mean_changes.png"), dpi=150, bbox_inches="tight")
 print("Saved parking_mean_changes.png")
 
 # ---------------------------------------------------------------------------
@@ -89,7 +95,7 @@ bar_chart(ax2, fig2, type_labels, type_vals, type_colors,
           "Lots vs. Ramps:\nAverage Total Value Change",
           "Current vs. Previous Assessment")
 fig2.tight_layout()
-fig2.savefig("parking_lot_vs_ramp_means.png", dpi=150, bbox_inches="tight")
+fig2.savefig(os.path.join(CHARTS_DIR, "parking_lot_vs_ramp_means.png"), dpi=150, bbox_inches="tight")
 print("Saved parking_lot_vs_ramp_means.png")
 
 # ---------------------------------------------------------------------------
@@ -106,7 +112,7 @@ ax3.annotate(
     xy=(0.5, -0.12), xycoords="axes fraction", ha="center", fontsize=9, color="#777777",
 )
 fig3.tight_layout()
-fig3.savefig("parking_mean_changes_prior.png", dpi=150, bbox_inches="tight")
+fig3.savefig(os.path.join(CHARTS_DIR, "parking_mean_changes_prior.png"), dpi=150, bbox_inches="tight")
 print("Saved parking_mean_changes_prior.png")
 
 # ---------------------------------------------------------------------------
@@ -121,7 +127,7 @@ bar_chart(ax4, fig4, type_labels, prior_type_vals, type_colors,
           "Lots vs. Ramps:\nAverage Total Value Change",
           "Previous vs. Previous2 Assessment (Prior Cycle)")
 fig4.tight_layout()
-fig4.savefig("parking_lot_vs_ramp_means_prior.png", dpi=150, bbox_inches="tight")
+fig4.savefig(os.path.join(CHARTS_DIR, "parking_lot_vs_ramp_means_prior.png"), dpi=150, bbox_inches="tight")
 print("Saved parking_lot_vs_ramp_means_prior.png")
 
 plt.show()

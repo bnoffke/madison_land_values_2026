@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import subprocess
 
@@ -6,6 +7,10 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import pandas as pd
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CHARTS_DIR = os.path.join(SCRIPT_DIR, "charts")
+os.makedirs(CHARTS_DIR, exist_ok=True)
 
 # ---------------------------------------------------------------------------
 # Step 1: Query 2016–2025 from parquet
@@ -25,7 +30,7 @@ hist.columns = ["parcel_id", "year", "land", "improvement", "total"]
 # Step 2: Load 2026 values from GeoJSON
 # ---------------------------------------------------------------------------
 print("Loading GeoJSON for 2026 values...")
-gdf = gpd.read_file("Tax_Parcels.geojson", engine="pyogrio")
+gdf = gpd.read_file(os.path.join(SCRIPT_DIR, "..", "Tax_Parcels.geojson"), engine="pyogrio")
 
 PARCELS = {
     "070914422038": "117 W Gorham",
@@ -116,5 +121,5 @@ fig.legend(
 )
 
 fig.tight_layout()
-fig.savefig("gorham_trend.png", dpi=150, bbox_inches="tight")
+fig.savefig(os.path.join(CHARTS_DIR, "gorham_trend.png"), dpi=150, bbox_inches="tight")
 print("Saved gorham_trend.png")

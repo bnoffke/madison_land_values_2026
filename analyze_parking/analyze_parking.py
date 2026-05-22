@@ -1,3 +1,5 @@
+import os
+
 import geopandas as gpd
 import pandas as pd
 import numpy as np
@@ -5,8 +7,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CHARTS_DIR = os.path.join(SCRIPT_DIR, "charts")
+os.makedirs(CHARTS_DIR, exist_ok=True)
+
 print("Loading GeoJSON...")
-gdf = gpd.read_file("Tax_Parcels.geojson", engine="pyogrio")
+gdf = gpd.read_file(os.path.join(SCRIPT_DIR, "..", "Tax_Parcels.geojson"), engine="pyogrio")
 
 cols = [
     "PropertyClass", "PropertyUse",
@@ -83,7 +89,7 @@ ax1.set_xticklabels([f"{m}\n(n={counts1.get(m, 0):,})" for m in metric_order], f
 fig1.text(0.5, -0.01, "Whiskers = 1.5×IQR  |  Clipped to 2nd–98th percentile",
           ha="center", fontsize=9, color="gray")
 fig1.tight_layout()
-fig1.savefig("parking_assessment_changes.png", dpi=150, bbox_inches="tight")
+fig1.savefig(os.path.join(CHARTS_DIR, "parking_assessment_changes.png"), dpi=150, bbox_inches="tight")
 print("Saved parking_assessment_changes.png")
 
 # ---------------------------------------------------------------------------
@@ -117,7 +123,7 @@ ax2.set_xticklabels([f"{t}\n(n={counts2.get(t, 0):,})" for t in type_order], fon
 fig2.text(0.5, -0.01, "Whiskers = 1.5×IQR  |  Clipped to 2nd–98th percentile",
           ha="center", fontsize=9, color="gray")
 fig2.tight_layout()
-fig2.savefig("parking_lot_vs_ramp.png", dpi=150, bbox_inches="tight")
+fig2.savefig(os.path.join(CHARTS_DIR, "parking_lot_vs_ramp.png"), dpi=150, bbox_inches="tight")
 print("Saved parking_lot_vs_ramp.png")
 
 # ---------------------------------------------------------------------------
@@ -156,7 +162,7 @@ ax3.set_xticklabels([f"{m}\n(n={counts3.get(m, 0):,})" for m in metric_order], f
 fig3.text(0.5, -0.01, "Whiskers = 1.5×IQR  |  Clipped to 2nd–98th percentile",
           ha="center", fontsize=9, color="gray")
 fig3.tight_layout()
-fig3.savefig("parking_assessment_changes_prior.png", dpi=150, bbox_inches="tight")
+fig3.savefig(os.path.join(CHARTS_DIR, "parking_assessment_changes_prior.png"), dpi=150, bbox_inches="tight")
 print("Saved parking_assessment_changes_prior.png")
 
 # ---------------------------------------------------------------------------
@@ -190,7 +196,7 @@ ax4.set_xticklabels([f"{t}\n(n={counts4.get(t, 0):,})" for t in type_order], fon
 fig4.text(0.5, -0.01, "Whiskers = 1.5×IQR  |  Clipped to 2nd–98th percentile",
           ha="center", fontsize=9, color="gray")
 fig4.tight_layout()
-fig4.savefig("parking_lot_vs_ramp_prior.png", dpi=150, bbox_inches="tight")
+fig4.savefig(os.path.join(CHARTS_DIR, "parking_lot_vs_ramp_prior.png"), dpi=150, bbox_inches="tight")
 print("Saved parking_lot_vs_ramp_prior.png")
 
 plt.show()

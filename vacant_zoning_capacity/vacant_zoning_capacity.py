@@ -1,10 +1,16 @@
+import os
+
 import geopandas as gpd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CHARTS_DIR = os.path.join(SCRIPT_DIR, "charts")
+os.makedirs(CHARTS_DIR, exist_ok=True)
+
 print("Loading GeoJSON...")
-gdf = gpd.read_file("Tax_Parcels.geojson", engine="pyogrio")
+gdf = gpd.read_file(os.path.join(SCRIPT_DIR, "..", "Tax_Parcels.geojson"), engine="pyogrio")
 
 vacant = gdf[
     (gdf["PropertyClass"] == "Residential") &
@@ -129,7 +135,7 @@ ax.annotate(
 )
 
 fig.tight_layout()
-fig.savefig("vacant_zoning_capacity.png", dpi=150, bbox_inches="tight")
+fig.savefig(os.path.join(CHARTS_DIR, "vacant_zoning_capacity.png"), dpi=150, bbox_inches="tight")
 print("\nSaved vacant_zoning_capacity.png")
 plt.show()
 print("Done.")

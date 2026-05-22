@@ -1,3 +1,5 @@
+import os
+
 import geopandas as gpd
 import pandas as pd
 import numpy as np
@@ -5,11 +7,15 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CHARTS_DIR = os.path.join(SCRIPT_DIR, "charts")
+os.makedirs(CHARTS_DIR, exist_ok=True)
+
 # ---------------------------------------------------------------------------
 # Load & prepare
 # ---------------------------------------------------------------------------
 print("Loading GeoJSON...")
-gdf = gpd.read_file("Tax_Parcels.geojson", engine="pyogrio")
+gdf = gpd.read_file(os.path.join(SCRIPT_DIR, "..", "Tax_Parcels.geojson"), engine="pyogrio")
 
 cols = [
     "PropertyClass", "PropertyUse",
@@ -109,7 +115,7 @@ fig1.text(
     ha="center", fontsize=9, color="gray"
 )
 fig1.tight_layout()
-fig1.savefig("assessment_change_by_class.png", dpi=150, bbox_inches="tight")
+fig1.savefig(os.path.join(CHARTS_DIR, "assessment_change_by_class.png"), dpi=150, bbox_inches="tight")
 print("Saved assessment_change_by_class.png")
 
 # ---------------------------------------------------------------------------
@@ -174,7 +180,7 @@ fig2.text(
     ha="center", fontsize=9, color="gray"
 )
 fig2.tight_layout()
-fig2.savefig("vacant_vs_improved_by_class.png", dpi=150, bbox_inches="tight")
+fig2.savefig(os.path.join(CHARTS_DIR, "vacant_vs_improved_by_class.png"), dpi=150, bbox_inches="tight")
 print("Saved vacant_vs_improved_by_class.png")
 
 # ---------------------------------------------------------------------------
@@ -226,7 +232,7 @@ fig3.text(
     ha="center", fontsize=9, color="gray",
 )
 fig3.tight_layout()
-fig3.savefig("share_change_by_class.png", dpi=150, bbox_inches="tight")
+fig3.savefig(os.path.join(CHARTS_DIR, "share_change_by_class.png"), dpi=150, bbox_inches="tight")
 print("Saved share_change_by_class.png")
 
 # ---------------------------------------------------------------------------
@@ -291,7 +297,7 @@ fig4 = make_bar_chart(
     ylabel="% Change in Total Assessed Value",
     annotation="Aggregate % change: (Σcurrent − Σprevious) / Σprevious",
 )
-fig4.savefig("value_change_by_class_means.png", dpi=150, bbox_inches="tight")
+fig4.savefig(os.path.join(CHARTS_DIR, "value_change_by_class_means.png"), dpi=150, bbox_inches="tight")
 print("Saved value_change_by_class_means.png")
 
 fig5 = make_bar_chart(
@@ -301,7 +307,7 @@ fig5 = make_bar_chart(
     ylabel="% Change in Tax Share",
     annotation="Share = Σclass / Σall properties  |  Positive = class bears a larger share of the levy",
 )
-fig5.savefig("share_change_by_class_means.png", dpi=150, bbox_inches="tight")
+fig5.savefig(os.path.join(CHARTS_DIR, "share_change_by_class_means.png"), dpi=150, bbox_inches="tight")
 print("Saved share_change_by_class_means.png")
 
 plt.show()

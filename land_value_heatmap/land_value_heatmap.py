@@ -1,3 +1,5 @@
+import os
+
 import geopandas as gpd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,8 +8,12 @@ from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 import contextily as cx
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CHARTS_DIR = os.path.join(SCRIPT_DIR, "charts")
+os.makedirs(CHARTS_DIR, exist_ok=True)
+
 print("Loading GeoJSON...")
-gdf_full = gpd.read_file("Tax_Parcels.geojson", engine="pyogrio")
+gdf_full = gpd.read_file(os.path.join(SCRIPT_DIR, "..", "Tax_Parcels.geojson"), engine="pyogrio")
 
 # Aggregate residential unit land values to master parcel level
 res = gdf_full[gdf_full["PropertyClass"] == "Residential"].copy()
@@ -79,8 +85,9 @@ def plot_heatmap(gdf, column, cmap, vmin, vmax, title, subtitle, cbar_label, cba
     cbar.ax.xaxis.set_major_formatter(cbar_fmt)
     ax.set_axis_off()
     fig.tight_layout()
-    fig.savefig(outfile, dpi=150, bbox_inches="tight")
-    print(f"Saved {outfile}")
+    outpath = os.path.join(CHARTS_DIR, outfile)
+    fig.savefig(outpath, dpi=150, bbox_inches="tight")
+    print(f"Saved {outpath}")
 
 
 # Figure 1: % change in land value
@@ -139,14 +146,38 @@ plot_heatmap(
     outfile="land_value_sqft_2025_heatmap.png",
 )
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
+
+
+def annotate_year(img, year):
+    img = img.copy().convert("RGBA")
+    draw = ImageDraw.Draw(img)
+    text = str(year)
+    try:
+        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", size=96)
+    except OSError:
+        font = ImageFont.load_default()
+    x, y = 30, 160
+    bbox = draw.textbbox((x, y), text, font=font)
+    pad = 8
+    draw.rectangle(
+        [bbox[0] - pad, bbox[1] - pad, bbox[2] + pad, bbox[3] + pad],
+        fill=(0, 0, 0, 160),
+    )
+    draw.text((x, y), text, font=font, fill=(255, 255, 255, 255))
+    return img.convert("RGB")
+
+
+def dither_frame(img):
+    return img.quantize(colors=256, dither=Image.Dither.FLOYDSTEINBERG)
+
 
 frames_2yr = [
-    Image.open("land_value_sqft_2025_heatmap.png"),
-    Image.open("land_value_sqft_2026_heatmap.png"),
+    dither_frame(annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2025_heatmap.png")), 2025)),
+    dither_frame(annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2026_heatmap.png")), 2026)),
 ]
 frames_2yr[0].save(
-    "land_value_sqft_comparison.gif",
+    os.path.join(CHARTS_DIR, "land_value_sqft_comparison.gif"),
     save_all=True,
     append_images=frames_2yr[1:],
     duration=2000,
@@ -155,12 +186,12 @@ frames_2yr[0].save(
 print("Saved land_value_sqft_comparison.gif")
 
 frames_3yr = [
-    Image.open("land_value_sqft_2024_heatmap.png"),
-    Image.open("land_value_sqft_2025_heatmap.png"),
-    Image.open("land_value_sqft_2026_heatmap.png"),
+    dither_frame(annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2024_heatmap.png")), 2024)),
+    dither_frame(annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2025_heatmap.png")), 2025)),
+    dither_frame(annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2026_heatmap.png")), 2026)),
 ]
 frames_3yr[0].save(
-    "land_value_sqft_3yr_comparison.gif",
+    os.path.join(CHARTS_DIR, "land_value_sqft_3yr_comparison.gif"),
     save_all=True,
     append_images=frames_3yr[1:],
     duration=2000,

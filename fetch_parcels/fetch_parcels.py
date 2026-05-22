@@ -1,10 +1,12 @@
 import json
+import os
 import time
 import requests
 
 BASE_URL = "https://maps.cityofmadison.com/arcgis/rest/services/Public/OPEN_DATA2/FeatureServer/0/query"
 PAGE_SIZE = 1000
-OUTPUT_FILE = "Tax_Parcels.geojson"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_FILE = os.path.join(SCRIPT_DIR, "..", "Tax_Parcels.geojson")
 
 def get_total_count():
     r = requests.get(BASE_URL, params={

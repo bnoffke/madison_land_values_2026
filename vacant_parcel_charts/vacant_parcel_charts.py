@@ -1,11 +1,17 @@
+import os
+
 import geopandas as gpd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import contextily as cx
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CHARTS_DIR = os.path.join(SCRIPT_DIR, "charts")
+os.makedirs(CHARTS_DIR, exist_ok=True)
+
 print("Loading GeoJSON...")
-gdf = gpd.read_file("Tax_Parcels.geojson", engine="pyogrio")
+gdf = gpd.read_file(os.path.join(SCRIPT_DIR, "..", "Tax_Parcels.geojson"), engine="pyogrio")
 
 res = gdf[gdf["PropertyClass"] == "Residential"].copy()
 vacant  = res[res["PropertyUse"].str.contains("vacant", case=False, na=False)].copy()
@@ -54,7 +60,7 @@ ax1.set_axisbelow(True)
 ax1.spines[["top", "right"]].set_visible(False)
 
 fig1.tight_layout()
-fig1.savefig("vacant_lot_size_distribution.png", dpi=150, bbox_inches="tight")
+fig1.savefig(os.path.join(CHARTS_DIR, "vacant_lot_size_distribution.png"), dpi=150, bbox_inches="tight")
 print("Saved vacant_lot_size_distribution.png")
 
 # ---------------------------------------------------------------------------
@@ -84,7 +90,7 @@ ax2.legend(handles=legend_handles, loc="lower right", fontsize=11, framealpha=0.
 ax2.set_axis_off()
 
 fig2.tight_layout()
-fig2.savefig("vacant_parcel_map.png", dpi=150, bbox_inches="tight")
+fig2.savefig(os.path.join(CHARTS_DIR, "vacant_parcel_map.png"), dpi=150, bbox_inches="tight")
 print("Saved vacant_parcel_map.png")
 
 plt.show()

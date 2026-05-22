@@ -1,3 +1,5 @@
+import os
+
 import geopandas as gpd
 import pandas as pd
 import numpy as np
@@ -5,11 +7,15 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CHARTS_DIR = os.path.join(SCRIPT_DIR, "charts")
+os.makedirs(CHARTS_DIR, exist_ok=True)
+
 # ---------------------------------------------------------------------------
 # Load & prepare — Residential only
 # ---------------------------------------------------------------------------
 print("Loading GeoJSON...")
-gdf = gpd.read_file("Tax_Parcels.geojson", engine="pyogrio")
+gdf = gpd.read_file(os.path.join(SCRIPT_DIR, "..", "Tax_Parcels.geojson"), engine="pyogrio")
 
 cols = [
     "PropertyClass", "PropertyUse",
@@ -109,7 +115,7 @@ fig1.text(
     ha="center", fontsize=9, color="gray",
 )
 fig1.tight_layout()
-fig1.savefig("residential_assessment_changes.png", dpi=150, bbox_inches="tight")
+fig1.savefig(os.path.join(CHARTS_DIR, "residential_assessment_changes.png"), dpi=150, bbox_inches="tight")
 print("Saved residential_assessment_changes.png")
 
 # ---------------------------------------------------------------------------
@@ -158,7 +164,7 @@ fig2.text(
     ha="center", fontsize=9, color="gray",
 )
 fig2.tight_layout()
-fig2.savefig("residential_vacant_vs_improved.png", dpi=150, bbox_inches="tight")
+fig2.savefig(os.path.join(CHARTS_DIR, "residential_vacant_vs_improved.png"), dpi=150, bbox_inches="tight")
 print("Saved residential_vacant_vs_improved.png")
 
 # ---------------------------------------------------------------------------
@@ -211,7 +217,7 @@ fig3.text(
     ha="center", fontsize=9, color="gray",
 )
 fig3.tight_layout()
-fig3.savefig("residential_assessment_changes_prior.png", dpi=150, bbox_inches="tight")
+fig3.savefig(os.path.join(CHARTS_DIR, "residential_assessment_changes_prior.png"), dpi=150, bbox_inches="tight")
 print("Saved residential_assessment_changes_prior.png")
 
 # ---------------------------------------------------------------------------
@@ -257,7 +263,7 @@ fig4.text(
     ha="center", fontsize=9, color="gray",
 )
 fig4.tight_layout()
-fig4.savefig("residential_vacant_vs_improved_prior.png", dpi=150, bbox_inches="tight")
+fig4.savefig(os.path.join(CHARTS_DIR, "residential_vacant_vs_improved_prior.png"), dpi=150, bbox_inches="tight")
 print("Saved residential_vacant_vs_improved_prior.png")
 
 # ---------------------------------------------------------------------------
@@ -310,7 +316,7 @@ fig5.text(
     ha="center", fontsize=9, color="gray",
 )
 fig5.tight_layout()
-fig5.savefig("residential_share_delta.png", dpi=150, bbox_inches="tight")
+fig5.savefig(os.path.join(CHARTS_DIR, "residential_share_delta.png"), dpi=150, bbox_inches="tight")
 print("Saved residential_share_delta.png")
 
 plt.show()
