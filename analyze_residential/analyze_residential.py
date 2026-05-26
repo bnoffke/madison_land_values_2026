@@ -77,13 +77,13 @@ long = long.melt(var_name="metric", value_name="pct").dropna()
 long["metric"] = long["metric"].map(metric_map)
 long["metric"] = pd.Categorical(long["metric"], categories=metric_order, ordered=True)
 
-fig1, ax1 = plt.subplots(figsize=(10, 7))
+fig1, ax1 = plt.subplots(figsize=(7, 6))
 fig1.suptitle(
     "Residential Assessment % Change\n(Current vs. Previous)",
     fontsize=14,
 )
 
-palette1 = {"Land": "#5B8DB8", "Improvement": "#6AAB6A", "Total": "#9B6BAE"}
+palette1 = {"Land": "#6AAB6A", "Improvement": "#5B8DB8", "Total": "#9B6BAE"}
 
 sns.boxplot(
     data=long,
@@ -121,21 +121,25 @@ print("Saved residential_assessment_changes.png")
 # ---------------------------------------------------------------------------
 # Figure 2: Vacant vs Improved — total % change (residential)
 # ---------------------------------------------------------------------------
-lot_order = ["Improved", "Vacant"]
-palette2  = {"Improved": "#4C8BE0", "Vacant": "#E07B4C"}
+lot_order = ["All Residential", "Improved", "Vacant"]
+palette2  = {"All Residential": "#9B6BAE", "Improved": "#4C8BE0", "Vacant": "#E07B4C"}
 
 plot2 = df[["lot_type", "total_pct"]].copy()
 plot2["total_pct"] = clip(plot2["total_pct"])
 plot2 = plot2.dropna(subset=["total_pct"])
 
-fig2, ax2 = plt.subplots(figsize=(8, 7))
+all_row2 = plot2.copy()
+all_row2["lot_type"] = "All Residential"
+plot2_combined = pd.concat([all_row2, plot2], ignore_index=True)
+
+fig2, ax2 = plt.subplots(figsize=(7, 7))
 fig2.suptitle(
     "Residential Total Value % Change\nVacant vs. Improved Lots (Current vs. Previous)",
     fontsize=14,
 )
 
 sns.boxplot(
-    data=plot2,
+    data=plot2_combined,
     x="lot_type",
     y="total_pct",
     hue="lot_type",
@@ -152,7 +156,7 @@ ax2.set_xlabel("")
 ax2.set_ylabel("Total Value % Change", fontsize=11)
 ax2.yaxis.set_major_formatter(mticker.FuncFormatter(lambda v, _: f"{v:+.0f}%"))
 
-counts2 = plot2.groupby("lot_type")["total_pct"].count()
+counts2 = plot2_combined.groupby("lot_type")["total_pct"].count()
 ax2.set_xticks(range(len(lot_order)))
 ax2.set_xticklabels([
     f"{lt}\n(n={counts2.get(lt, 0):,})" for lt in lot_order

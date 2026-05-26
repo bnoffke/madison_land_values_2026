@@ -168,34 +168,30 @@ def annotate_year(img, year):
     return img.convert("RGB")
 
 
-def dither_frame(img):
-    return img.quantize(colors=256, dither=Image.Dither.FLOYDSTEINBERG)
-
-
 frames_2yr = [
-    dither_frame(annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2025_heatmap.png")), 2025)),
-    dither_frame(annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2026_heatmap.png")), 2026)),
+    annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2025_heatmap.png")), 2025),
+    annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2026_heatmap.png")), 2026),
 ]
 frames_2yr[0].save(
-    os.path.join(CHARTS_DIR, "land_value_sqft_comparison.gif"),
+    os.path.join(CHARTS_DIR, "land_value_sqft_comparison.webp"),
     save_all=True,
     append_images=frames_2yr[1:],
     duration=2000,
     loop=0,
 )
-print("Saved land_value_sqft_comparison.gif")
+print("Saved land_value_sqft_comparison.webp")
 
 frames_3yr = [
-    dither_frame(annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2024_heatmap.png")), 2024)),
-    dither_frame(annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2025_heatmap.png")), 2025)),
-    dither_frame(annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2026_heatmap.png")), 2026)),
+    annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2024_heatmap.png")), 2024),
+    annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2025_heatmap.png")), 2025),
+    annotate_year(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2026_heatmap.png")), 2026),
 ]
 frames_3yr[0].save(
-    os.path.join(CHARTS_DIR, "land_value_sqft_3yr_comparison.gif"),
+    os.path.join(CHARTS_DIR, "land_value_sqft_3yr_comparison.webp"),
     save_all=True,
     append_images=frames_3yr[1:],
-    duration=2000,
+    duration=[1000, 1000, 2000],
     loop=0,
 )
-print("Saved land_value_sqft_3yr_comparison.gif")
+print("Saved land_value_sqft_3yr_comparison.webp")
 print("Done.")

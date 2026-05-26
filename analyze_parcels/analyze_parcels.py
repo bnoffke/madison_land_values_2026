@@ -121,7 +121,7 @@ print("Saved assessment_change_by_class.png")
 # ---------------------------------------------------------------------------
 # Figure 2: Vacant vs Improved — total % change by property class
 # ---------------------------------------------------------------------------
-fig2, ax2 = plt.subplots(figsize=(12, 7))
+fig2, ax2 = plt.subplots(figsize=(7, 7))
 fig2.suptitle(
     "Total Value % Change: Vacant vs. Improved Lots by Property Class\n(Current vs. Previous)",
     fontsize=14,

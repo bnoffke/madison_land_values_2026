@@ -44,10 +44,10 @@ df = pd.concat([hist, df_2026], ignore_index=True)
 # ---------------------------------------------------------------------------
 # Plot
 # ---------------------------------------------------------------------------
-COLORS = {"land": "#2ca02c", "improvement": "#1f77b4", "total": "#ff7f0e"}
+COLORS = {"land": "#6AAB6A", "improvement": "#5B8DB8", "total": "#9B6BAE"}
 LABELS = {"land": "Land Value", "improvement": "Improvement Value", "total": "Total Value"}
 
-fig, ax = plt.subplots(figsize=(10, 6))
+fig, ax = plt.subplots(figsize=(6, 7))
 fig.suptitle("My House", fontsize=14, fontweight="bold")
 
 years = df["year"].tolist()
@@ -68,7 +68,7 @@ ax.tick_params(axis="y", left=False)
 ax.set_ylabel("")
 ax.grid(axis="y", alpha=0.4)
 ax.set_axisbelow(True)
-ax.legend(loc="upper left", fontsize=10)
+ax.legend(loc="upper left", fontsize=9)
 
 fig.tight_layout()
 fig.savefig(os.path.join(CHARTS_DIR, "my_house_trend.png"), dpi=150, bbox_inches="tight")
