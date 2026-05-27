@@ -47,7 +47,7 @@ df = pd.concat([hist, df_2026], ignore_index=True)
 COLORS = {"land": "#6AAB6A", "improvement": "#5B8DB8", "total": "#9B6BAE"}
 LABELS = {"land": "Land Value", "improvement": "Improvement Value", "total": "Total Value"}
 
-fig, ax = plt.subplots(figsize=(6, 7))
+fig, ax = plt.subplots(figsize=(6, 5.75))
 fig.suptitle("My House", fontsize=14, fontweight="bold")
 
 years = df["year"].tolist()

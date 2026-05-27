@@ -157,7 +157,7 @@ land_117_2026 = float(df_117.loc[df_117["year"] == 2026, "land"].iloc[0])
 land_113_2026 = float(df_113.loc[df_113["year"] == 2026, "land"].iloc[0])
 
 # ── V1: Single overlay panel ─────────────────────────────────────────────────
-fig, ax = plt.subplots(figsize=(6, 7))
+fig, ax = plt.subplots(figsize=(6, 5.75))
 fig.suptitle("117 vs. 113 W Gorham: Assessed Values", fontsize=13, fontweight="bold")
 
 ax.plot(yrs, df_117["land"], color=COLOR_117, linewidth=2, label="Land — 117 W Gorham (Improved)")
