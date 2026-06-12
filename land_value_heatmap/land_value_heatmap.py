@@ -120,7 +120,7 @@ iqr = q3 - q1
 sqft_vmin, sqft_vmax = 0, q3 + 1.5 * iqr
 
 plot_heatmap(
-    merged, "land_sqft_2024", "magma", sqft_vmin, sqft_vmax,
+    merged, "land_sqft_2024", "magma_r", sqft_vmin, sqft_vmax,
     title="Residential Land Value per Sq Ft (2024)",
     subtitle="PreviousLand2 / LotSize  |  Color range: 1.5×IQR from 2026  |  Condos grouped to master parcel",
     cbar_label="Land Value ($/sqft)",
@@ -129,7 +129,7 @@ plot_heatmap(
 )
 
 plot_heatmap(
-    merged, "land_sqft_2026", "magma", sqft_vmin, sqft_vmax,
+    merged, "land_sqft_2026", "magma_r", sqft_vmin, sqft_vmax,
     title="Residential Land Value per Sq Ft (2026)",
     subtitle="CurrentLand / LotSize  |  Color range: 1.5×IQR from 2026  |  Condos grouped to master parcel",
     cbar_label="Land Value ($/sqft)",
@@ -138,7 +138,7 @@ plot_heatmap(
 )
 
 plot_heatmap(
-    merged, "land_sqft_2025", "magma", sqft_vmin, sqft_vmax,
+    merged, "land_sqft_2025", "magma_r", sqft_vmin, sqft_vmax,
     title="Residential Land Value per Sq Ft (2025)",
     subtitle="PreviousLand / LotSize  |  Color range: 1.5×IQR from 2026  |  Condos grouped to master parcel",
     cbar_label="Land Value ($/sqft)",
