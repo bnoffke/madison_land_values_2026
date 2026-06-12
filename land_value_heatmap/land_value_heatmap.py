@@ -67,22 +67,24 @@ merged = merged.set_crs("EPSG:4326").to_crs(epsg=3857)
 print(f"Mapped parcels (condo-grouped): {len(merged):,}")
 
 
-def plot_heatmap(gdf, column, cmap, vmin, vmax, title, subtitle, cbar_label, cbar_fmt, outfile):
+def plot_heatmap(gdf, column, cmap, vmin, vmax, title, subtitle, cbar_label, cbar_fmt, outfile, compact=False):
     print(f"  Color range: {vmin:.3g} to {vmax:.3g}")
-    fig, ax = plt.subplots(figsize=(12, 10))
-    fig.suptitle(title, fontsize=16, fontweight="bold")
-    ax.set_title(subtitle, fontsize=11, color="#555555", pad=8)
+    fig, ax = plt.subplots(figsize=(12, 7.5) if compact else (12, 10))
+    if not compact:
+        fig.suptitle(title, fontsize=16, fontweight="bold")
+        ax.set_title(subtitle, fontsize=11, color="#555555", pad=8)
     gdf.plot(
         column=column, cmap=cmap, vmin=vmin, vmax=vmax,
         linewidth=0, ax=ax, legend=False, missing_kwds={"color": "lightgrey"},
     )
     cx.add_basemap(ax, crs=gdf.crs, source=cx.providers.CartoDB.Positron)
-    norm = Normalize(vmin=vmin, vmax=vmax)
-    sm = ScalarMappable(cmap=cmap, norm=norm)
-    sm.set_array([])
-    cbar = fig.colorbar(sm, ax=ax, orientation="horizontal", shrink=0.5, pad=0.02)
-    cbar.set_label(cbar_label, fontsize=10)
-    cbar.ax.xaxis.set_major_formatter(cbar_fmt)
+    if not compact:
+        norm = Normalize(vmin=vmin, vmax=vmax)
+        sm = ScalarMappable(cmap=cmap, norm=norm)
+        sm.set_array([])
+        cbar = fig.colorbar(sm, ax=ax, orientation="horizontal", shrink=0.5, pad=0.02)
+        cbar.set_label(cbar_label, fontsize=10)
+        cbar.ax.xaxis.set_major_formatter(cbar_fmt)
     ax.set_axis_off()
     fig.tight_layout()
     outpath = os.path.join(CHARTS_DIR, outfile)
@@ -149,7 +151,12 @@ plot_heatmap(
 from PIL import Image, ImageDraw, ImageFont
 
 
-def annotate_year(img, year):
+def crop_vertical(img, top=0.25, bottom=0.15):
+    w, h = img.size
+    return img.crop((0, int(h * top), w, h - int(h * bottom)))
+
+
+def annotate_year(img, year, y_frac=None):
     img = img.copy().convert("RGBA")
     draw = ImageDraw.Draw(img)
     text = str(year)
@@ -157,7 +164,8 @@ def annotate_year(img, year):
         font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", size=96)
     except OSError:
         font = ImageFont.load_default()
-    x, y = 30, 160
+    x = 30
+    y = int(img.height * y_frac) if y_frac is not None else 160
     bbox = draw.textbbox((x, y), text, font=font)
     pad = 8
     draw.rectangle(
@@ -194,4 +202,31 @@ frames_3yr[0].save(
     loop=0,
 )
 print("Saved land_value_sqft_3yr_comparison.webp")
+
+# Compact preview frames (no title/legend, ~20% shorter height)
+cbar_fmt_sqft = mticker.FuncFormatter(lambda v, _: f"${v:,.0f}")
+for year, col, fname in [
+    (2024, "land_sqft_2024", "land_value_sqft_2024_heatmap_compact.png"),
+    (2025, "land_sqft_2025", "land_value_sqft_2025_heatmap_compact.png"),
+    (2026, "land_sqft_2026", "land_value_sqft_2026_heatmap_compact.png"),
+]:
+    plot_heatmap(
+        merged, col, "magma_r", sqft_vmin, sqft_vmax,
+        title="", subtitle="", cbar_label="", cbar_fmt=cbar_fmt_sqft,
+        outfile=fname, compact=True,
+    )
+
+frames_preview = [
+    annotate_year(crop_vertical(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2024_heatmap_compact.png"))), 2024, y_frac=0.15),
+    annotate_year(crop_vertical(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2025_heatmap_compact.png"))), 2025, y_frac=0.15),
+    annotate_year(crop_vertical(Image.open(os.path.join(CHARTS_DIR, "land_value_sqft_2026_heatmap_compact.png"))), 2026, y_frac=0.15),
+]
+frames_preview[0].save(
+    os.path.join(CHARTS_DIR, "land_value_sqft_3yr_comparison_preview.webp"),
+    save_all=True,
+    append_images=frames_preview[1:],
+    duration=[1000, 1000, 2000],
+    loop=0,
+)
+print("Saved land_value_sqft_3yr_comparison_preview.webp")
 print("Done.")

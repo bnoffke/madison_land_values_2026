@@ -11,4 +11,6 @@ dependencies = [
     "pyogrio",
     "requests",
     "contextily",
+    "pydeck>=0.9.2",
+    "playwright>=1.60.0",
 ]
